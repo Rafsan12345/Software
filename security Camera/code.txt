@@ -1,0 +1,84 @@
+
+import datetime
+from tkinter import *
+import cv2
+from PIL import Image, ImageTk
+import urllib.request as ur
+
+# Create a GUI app
+app = Tk()
+app.title("Smart Security Camara and Computer vision ")
+# Bind the app with Escape keyboard to
+# quit app whenever pressed
+app.bind('<Escape>', lambda e: app.quit())
+# Create a label and display it on app
+label_widget = Label(app)
+label_widget.pack()
+# Create a function to open camera and
+# display it in the label_widget on app
+def capture():
+	time_stamp = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
+	file_name = f'Capture-{time_stamp}.png'
+	cv2.imwrite(file_name, frame1)
+def open_camera():
+    global cam,ret,url,width,frame1,frame2,height
+    url = str(entry.get())
+    area1 = int(entry1.get())
+    cam = cv2.VideoCapture(url)
+    # Declare the width and height in variables
+    width, height = 300, 300
+    # Set the width and height
+    cam.set(cv2.CAP_PROP_FRAME_WIDTH, width)
+    cam.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
+
+    ret, frame1 = cam.read()
+
+    ret, frame2 = cam.read()
+
+    diff = cv2.absdiff(frame1, frame2)
+    gray = cv2.cvtColor(diff, cv2.COLOR_RGB2GRAY)
+    blur = cv2.GaussianBlur(gray, (5, 5), 0)
+    _, thresh = cv2.threshold(blur, 20, 255, cv2.THRESH_BINARY)
+    dilated = cv2.dilate(thresh, None, iterations=3)
+    contours, _ = cv2.findContours(dilated, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    # cv2.drawContours(frame1, contours, -1, (0, 255, 0), 2)
+    for c in contours:
+        if cv2.contourArea(c) < area1:
+            continue
+        x, y, w, h = cv2.boundingRect(c)
+        cv2.rectangle(frame1, (x, y), (x + w, y + h), (0, 255, 0), 2)
+#imshow like
+    captured_image = Image.fromarray( frame1 )
+    # Convert captured image to photoimage
+    photo_image = ImageTk.PhotoImage(image=captured_image)
+    # Displaying photoimage in the label
+    label_widget.photo_image = photo_image
+    # Configure image in the label
+    label_widget.configure(image=photo_image)
+    # Repeat the same process after every 10 seconds
+    label_widget.after(10, open_camera)
+
+
+# Create a button to open the camera in GUI app
+entry = Entry(app)
+entry1 = Entry(app)
+label1 = Label( app, text= "ENTER IP ADRESS",bg= "black", fg= "white")
+label2 = Label( app, text= "ENTER CONTOURS AREA UP TO DETECT",bg= "black", fg= "white")
+
+entry.insert(0, "http://192.168.0.100:8080/video")  # Set the default value to "10"
+entry1.insert(0, "500")  # Set the default contors detect area value to "500"
+label1.pack()
+entry.pack()
+label2.pack()
+entry1.pack()
+
+
+
+button1 = Button(app, text="Open Camera", command=open_camera,bg= "green", fg= "white")
+button1.pack()
+button2 = Button(app, text="Capure", command = capture,bg= "blue", fg= "white")
+button3 = Button(app, text="EXIT", command = app.quit,bg= "red", fg= "white")
+button2.pack()
+button3.pack()
+# Create an infinite loop for displaying app on screen
+app.mainloop()
