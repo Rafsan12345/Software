@@ -2,6 +2,7 @@ import tkinter as tk
 from PIL import ImageTk, Image
 import cmath, math,numpy
 import time
+import os,sys
 ###################################################################
 class TRG():
     def cos(a):
@@ -86,21 +87,27 @@ def calculate():
     # Set the output label to the sum
     label_output.config(text=f"Requred Kvar > {ppp} if you use 3phase > {ppp/3} Capacitance Recruite >{ppp/(w)}uf")
 
+
+
+def resource_path(relative_path):
+    try:
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path,relative_path)
+
+
+
+
 # Create the main window
 window = tk.Tk()
 window.title("Power Factor Calculator")
-myImg = ImageTk.PhotoImage(Image.open('C:/Users/DCL/PycharmProjects/pythonProject/ccc.png'))
+window.iconbitmap(resource_path('c.ico'))
+myImg = ImageTk.PhotoImage(Image.open(resource_path('ccc.jpg')))
 labell = tk.Label(image=myImg)
 labelx = tk.Label(window, text="Power Factor Calculator")
 labelx.pack()
 labell.pack()
-
-
-
-
-
-
-
 
 
 # Create two input fields
