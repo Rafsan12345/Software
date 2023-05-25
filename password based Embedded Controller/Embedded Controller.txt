@@ -1,0 +1,106 @@
+import customtkinter
+import tkinter
+import pyfirmata
+import time
+customtkinter .set_appearance_mode("dark")
+customtkinter .set_default_color_theme("green")
+app = customtkinter .CTk()
+app.geometry("600x500")
+app.title("CTk example")
+######################################
+DD1 =0
+DD2 =0
+DD3 =0
+DD4 =0
+
+def D5():
+    global DD1
+    S = not(DD1)
+    DD1 = S
+    print(DD1)
+    board.digital[5].write(DD1)
+
+def D2():
+    global DD2
+    S2 = not (DD2)
+    DD2 = S2
+    print(DD2)
+    board.digital[2].write(DD2)
+
+def D3():
+    global DD3
+    S3 = not (DD3)
+    DD3 = S3
+    print(DD3)
+    #fg_color = "red"
+    board.digital[3].write(DD3)
+
+def D4():
+    global DD4
+    S4 = not (DD4)
+    DD4 = S4
+    print(DD4)
+    board.digital[4].write(DD4)
+
+
+
+
+def function():
+    password = Entry2.get()
+    #print(type(password))
+    if password == "1234":
+        global board, port
+        port = str(Entry1.get())
+        board = pyfirmata.Arduino(f'{port}')
+        new2 = customtkinter.CTkToplevel()
+        new2.geometry("400x400")
+        new2.label = customtkinter.CTkLabel(new2, text="CONTROL PANEL")
+        new2.label.pack(padx=20, pady=20)
+        button1 = customtkinter.CTkButton(master=new2, command=D2, text="D2",)
+        button1.pack(pady=12, padx=10)
+        button2 = customtkinter.CTkButton(master=new2, command=D3, text="D3")
+        button2.pack(pady=12, padx=10)
+        button3 = customtkinter.CTkButton(master=new2, command=D4, text="D4")
+        button3.pack(pady=12, padx=10)
+        button4 = customtkinter.CTkButton(master=new2, command=D5, text="D5")
+        button4.pack(pady=12, padx=10)
+        button5 = customtkinter.CTkButton(master=new2, command=new2.quit, text="EXIT")
+        button5.pack(pady=12, padx=10)
+        #
+        #
+        #
+        new2.mainloop()
+    else:
+        label3.configure(text='Wrong password')
+        pass
+
+
+
+
+
+
+
+frame = customtkinter.CTkFrame(master=app)
+frame.pack(pady=20,padx = 60,fill="both",expand=True)
+
+label1 = customtkinter.CTkLabel(master=frame,text="Embedded Control Software")
+label1.pack(pady=12,padx = 10)
+label5 = customtkinter.CTkLabel(master=frame,text="Enter Port Name")
+label5.pack(pady=12,padx = 10)
+Entry1 = customtkinter.CTkEntry(master=frame,placeholder_text="COM4")
+Entry1.insert(0, "COM3")
+Entry1.pack(pady=12,padx = 10)
+label9 = customtkinter.CTkLabel(master=frame,text="Enter Password")
+label9.pack(pady=12,padx = 10)
+Entry2 = customtkinter.CTkEntry(master=frame,placeholder_text="Password",show ="*")
+Entry2.pack(pady=12,padx = 10)
+
+button = customtkinter.CTkButton(master=frame,command=function,text="Connect")
+button.pack(pady=12,padx = 10)
+
+button8 = customtkinter.CTkButton(master=frame, command=frame.quit, text="EXIT")
+button8.pack(pady=12, padx=10)
+label3 = customtkinter.CTkLabel(master=frame,text='')
+label3.pack(pady=12, padx=10)
+#######################
+app.mainloop()
