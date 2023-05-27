@@ -1,0 +1,33 @@
+import tkinter as tk
+import time
+import serial
+import time
+
+arduino = serial.Serial('COM4', 9600)
+time.sleep(2)
+
+
+
+
+
+def update_TH():
+    x = arduino.readline()
+    c = str(x, 'UTF-8')
+    c = list(c)
+    h = c[0] + c[1] + c[3] + c[4]
+    t = c[6] + c[7] + c[9] + c[10]
+    t1 = float(t)/100
+    h1 = float(h)/100
+    print(h1,t1)
+    clock_label.config(text=f"Temperature:{t1} Humidity:{h1}")
+    clock_label.after(1000, update_TH)
+
+root = tk.Tk()
+root.title("Wheather Station")
+
+clock_label = tk.Label(root, font=("Helvetica", 48), bg="black", fg="white")
+clock_label.pack(padx=20, pady=20)
+
+update_TH()
+
+root.mainloop()

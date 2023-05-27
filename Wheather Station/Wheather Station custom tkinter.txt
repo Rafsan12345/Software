@@ -1,0 +1,37 @@
+import customtkinter
+import tkinter
+import serial
+import time
+arduino = serial.Serial('COM4', 9600)
+customtkinter .set_appearance_mode("dark")
+customtkinter .set_default_color_theme("green")
+app = customtkinter .CTk()
+app.geometry("600x500")
+app.title("CTk example")
+######################################
+def update_TH():
+    x = arduino.readline()
+    c = str(x, 'UTF-8')
+    c = list(c)
+    h = c[0] + c[1] + c[3] + c[4]
+    t = c[6] + c[7] + c[9] + c[10]
+    t1 = float(t)/100
+    h1 = float(h)/100
+    print(h1,t1)
+    clock_label.configure(text=f"Temperature:{t1} Humidity:{h1}")
+    clock_label.after(1000, update_TH)
+
+
+frame = customtkinter.CTkFrame(master=app)
+frame.pack(pady=20,padx = 60,fill="both",expand=True)
+clock_label = customtkinter.CTkLabel(master=frame,text="Login System")
+clock_label.pack(padx=20, pady=20)
+
+update_TH()
+
+
+
+
+
+#######################
+app.mainloop()
